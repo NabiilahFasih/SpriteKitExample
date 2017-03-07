@@ -9,39 +9,21 @@
 import SpriteKit
 import GameplayKit
 
-extension CGPoint
+struct PhysicsCategory
 {
-    //Overloading operator methods
-    static func - (left: CGPoint, right: CGPoint) -> CGPoint {
-        return CGPoint(x: left.x - right.x, y: left.y - right.y)
-    }
-    
-    static func + (left: CGPoint, right: CGPoint) -> CGPoint {
-        return CGPoint(x: left.x + right.x, y: left.y + right.y)
-    }
-    
-    static func * (point: CGPoint, scalar: CGFloat) -> CGPoint {
-        return CGPoint(x: point.x * scalar, y: point.y * scalar)
-    }
-    
-    static func / (point: CGPoint, scalar: CGFloat) -> CGPoint {
-        return CGPoint(x: point.x / scalar, y: point.y / scalar)
-    }
-    
-    func length() -> CGFloat {
-        return sqrt(x*x + y*y)
-    }
-    
-    func normalized() -> CGPoint {  //Convert to unit vector(size 1)
-        return self / length()
-    }
+    static let None      : UInt32 = 0
+    static let All       : UInt32 = UInt32.max
+    static let Monster   : UInt32 = 0b1     // 1*2^0 = 1             : 01
+    static let Projectile: UInt32 = 0b10    // 0*2^0 + 1*2^1 = 2     : 10
 }
 
-class GameScene: SKScene {
+class GameScene: SKScene
+{
     
     let player = SKSpriteNode(imageNamed: "player")
     
-    override func didMove(to view: SKView){
+    override func didMove(to view: SKView)
+    {
         backgroundColor = SKColor.white
         player.position = CGPoint(x: size.width * 0.1, y: size.height * 0.5)
         addChild(player)
@@ -58,14 +40,14 @@ class GameScene: SKScene {
     {
         let monster = SKSpriteNode(imageNamed: "monster")
         
-        let yPosition = random(min: monster.size.height/2, max: size.height - monster.size.height/2)
+        let yPosition = Util.random(min: monster.size.height/2, max: size.height - monster.size.height/2)
         let xPosition = size.width + monster.size.width/2
         monster.position = CGPoint(x: xPosition, y: yPosition)
         
         addChild(monster)
         
         //Create actions
-        let duration = TimeInterval(random(min: 2.0, max: 4.0))
+        let duration = TimeInterval(Util.random(min: 2.0, max: 4.0))
         let actionMove = SKAction.move(to: CGPoint(x: -monster.size.width/2, y: yPosition), duration: duration)
         let actionMoveDone = SKAction.removeFromParent()
         
@@ -74,7 +56,8 @@ class GameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        guard let touch = touches.first else {
+        guard let touch = touches.first else
+        {
             return
         }
         let touchLocation = touch.location(in: self)
@@ -97,13 +80,5 @@ class GameScene: SKScene {
         let actionMove = SKAction.move(to: realDest, duration: 2.0)
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
-    }
-    
-    private func random() -> CGFloat {
-        return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
-    }
-    
-    private func random(min: CGFloat, max: CGFloat) -> CGFloat {
-        return random() * (max - min) + min
     }
  }
