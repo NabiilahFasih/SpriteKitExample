@@ -39,7 +39,6 @@ class GameOverScene: SKScene
     
     required init?(coder aDecoder: NSCoder)
     {
-        //Never gets called in our example
         fatalError("init(coder:) has not been implemented")
     }
 
