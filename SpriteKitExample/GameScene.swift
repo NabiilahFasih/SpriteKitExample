@@ -38,6 +38,7 @@ class GameScene: SKScene
         physicsWorld.gravity = CGVector.zero
         physicsWorld.contactDelegate = self
         
+        //1- Background music
         let backgroundMusic = SKAudioNode(fileNamed: "background-music-aac.caf")
         backgroundMusic.autoplayLooped = true
         addChild(backgroundMusic)
@@ -61,14 +62,14 @@ class GameScene: SKScene
         //Create actions
         let duration = TimeInterval(Util.random(min: 2.0, max: 4.0))
         let actionMove = SKAction.move(to: CGPoint(x: -monster.size.width/2, y: yPosition), duration: duration)
-        //let actionMoveDone = SKAction.removeFromParent()
+
         let loseAction = SKAction.run() {
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: false)
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
         
-        monster.run(SKAction.sequence([actionMove, loseAction /*, actionMoveDone*/]))
+        monster.run(SKAction.sequence([actionMove, loseAction]))
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
@@ -103,6 +104,7 @@ class GameScene: SKScene
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
         
+        //2- Projectile fired music
         run(SKAction.playSoundFileNamed("pew-pew-lei.caf", waitForCompletion: false))
     }
 }
