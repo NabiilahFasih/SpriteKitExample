@@ -19,7 +19,6 @@ struct PhysicsCategory
 
 class GameScene: SKScene
 {
-    
     let player = SKSpriteNode(imageNamed: "player")
     var monstersDestroyed = 0
     
@@ -51,6 +50,7 @@ class GameScene: SKScene
         let yPosition = Util.random(min: monster.size.height/2, max: size.height - monster.size.height/2)
         let xPosition = size.width + monster.size.width/2
         monster.position = CGPoint(x: xPosition, y: yPosition)
+        addChild(monster)
         
         monster.physicsBody = SKPhysicsBody(rectangleOf: monster.size)
         monster.physicsBody?.isDynamic = true
@@ -58,19 +58,17 @@ class GameScene: SKScene
         monster.physicsBody?.contactTestBitMask = PhysicsCategory.Projectile
         monster.physicsBody?.collisionBitMask = PhysicsCategory.None
         
-        addChild(monster)
-        
         //Create actions
         let duration = TimeInterval(Util.random(min: 2.0, max: 4.0))
         let actionMove = SKAction.move(to: CGPoint(x: -monster.size.width/2, y: yPosition), duration: duration)
-        let actionMoveDone = SKAction.removeFromParent()
+        //let actionMoveDone = SKAction.removeFromParent()
         let loseAction = SKAction.run() {
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: false)
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
         
-        monster.run(SKAction.sequence([actionMove, loseAction, actionMoveDone]))
+        monster.run(SKAction.sequence([actionMove, loseAction /*, actionMoveDone*/]))
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
@@ -90,20 +88,18 @@ class GameScene: SKScene
         projectile.physicsBody?.contactTestBitMask = PhysicsCategory.Monster
         projectile.physicsBody?.collisionBitMask = PhysicsCategory.None
         projectile.physicsBody?.usesPreciseCollisionDetection = true
+        addChild(projectile)
         
         let offset = touchLocation - projectile.position
-        
         if (offset.x < 0) { return }
-        
-        addChild(projectile)
         
         let direction = offset.normalized()
         
         let shootAmount = direction * 1000
         
-        let realDest = shootAmount + projectile.position
+        let destination = shootAmount + projectile.position
         
-        let actionMove = SKAction.move(to: realDest, duration: 2.0)
+        let actionMove = SKAction.move(to: destination, duration: 2.0)
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
         
@@ -142,8 +138,7 @@ extension GameScene : SKPhysicsContactDelegate
         monster.removeFromParent()
         
         monstersDestroyed += 1
-        
-        if (monstersDestroyed > 5)
+        if (monstersDestroyed >= 5)
         {
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: true)
