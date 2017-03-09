@@ -44,6 +44,7 @@ class GameScene: SKScene
         monster.run(SKAction.sequence([actionMove, actionMoveDone]))
     }
     
+    /*
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         guard let touch = touches.first else {
@@ -72,4 +73,5 @@ class GameScene: SKScene
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
     }
+    */
 }
