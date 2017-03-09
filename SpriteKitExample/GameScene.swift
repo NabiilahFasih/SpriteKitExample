@@ -31,6 +31,7 @@ class GameScene: SKScene
     {
         let monster = SKSpriteNode(imageNamed: "monster")
         
+        //Create monster sprite
         let yPosition = Util.random(min: monster.size.height/2, max: size.height - monster.size.height/2)
         let xPosition = size.width + monster.size.width/2
         monster.position = CGPoint(x: xPosition, y: yPosition)
@@ -52,24 +53,25 @@ class GameScene: SKScene
         }
         let touchLocation = touch.location(in: self)
         
+        //Create projectile sprite
         let projectile = SKSpriteNode(imageNamed: "projectile")
         projectile.position = player.position
         addChild(projectile)
         
         //Use of Vector Math to find direction
-        let offset = touchLocation - projectile.position
+        let direction = touchLocation - projectile.position
         
         //Shooting backwards - ignore it
-        if (offset.x < 0) { return }
+        if (direction.x < 0) { return }
         
         //Normalize to unit vector + Multiple with value enough to shoot it off screen
-        let direction = offset.normalized()
-        let shootAmount = direction * 1000
+        let unitDirection = direction.normalized()
+        let shootAmount = unitDirection * 1000
         
         //Final destination
-        let destination = shootAmount + projectile.position
+        let finalDestination = projectile.position + shootAmount
         
-        let actionMove = SKAction.move(to: destination, duration: 2.0)
+        let actionMove = SKAction.move(to: finalDestination, duration: 2.0)
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
     }
