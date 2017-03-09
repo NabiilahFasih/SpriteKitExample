@@ -59,7 +59,7 @@ class GameScene: SKScene
         
         let duration = TimeInterval(Util.random(min: 2.0, max: 4.0))
         let actionMove = SKAction.move(to: CGPoint(x: -monster.size.width/2, y: yPosition), duration: duration)
-        //let actionMoveDone = SKAction.removeFromParent()
+        let actionMoveDone = SKAction.removeFromParent()
         
         //2- Handle losing
         let loseAction = SKAction.run() {
@@ -68,8 +68,8 @@ class GameScene: SKScene
             self.view?.presentScene(gameOverScene, transition: reveal)
         }
         
-        //3- Only move and lose, no need to remove
-        monster.run(SKAction.sequence([actionMove, loseAction]))
+        //3- Technically no need for actionMoveDone, because this scene gets deallocated
+        monster.run(SKAction.sequence([actionMove, loseAction, actionMoveDone]))
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
