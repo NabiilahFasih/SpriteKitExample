@@ -90,16 +90,15 @@ class GameScene: SKScene
         projectile.physicsBody?.usesPreciseCollisionDetection = true
         addChild(projectile)
         
-        let offset = touchLocation - projectile.position
-        if (offset.x < 0) { return }
+        let direction = touchLocation - projectile.position
+        if (direction.x < 0) { return }
         
-        let direction = offset.normalized()
+        let unitDirection = direction.normalized()
+        let shootAmount = unitDirection * 1000
         
-        let shootAmount = direction * 1000
+        let finalDestination = shootAmount + projectile.position
         
-        let destination = shootAmount + projectile.position
-        
-        let actionMove = SKAction.move(to: destination, duration: 2.0)
+        let actionMove = SKAction.move(to: finalDestination, duration: 2.0)
         let actionMoveDone = SKAction.removeFromParent()
         projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
         
